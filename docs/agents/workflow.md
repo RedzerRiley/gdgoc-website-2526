@@ -1,21 +1,45 @@
 # Workflow
 
-The process every agent follows in this repo, whether it's Claude Code, Codex, Antigravity, Gemini CLI, Cursor, Copilot or any other. It is built on [Matt Pocock's skills](https://github.com/mattpocock/skills), which are committed to the repo.
+The process every agent follows in this repo, whether it's Claude Code, Codex, OpenCode, Antigravity, Cursor, Copilot or any other. It is built on [Matt Pocock's skills](https://github.com/mattpocock/skills), which are committed to the repo.
+
+## Supported agents
+
+Every agent needs two things: the project rules in `AGENTS.md` (privacy, secrets, workflow) and the skills. Checked against each tool's documentation on 2026-11-21:
+
+| Agent | Reads the rules from | Reads the skills from | Setup |
+| --- | --- | --- | --- |
+| Codex | `AGENTS.md` | `.agents/skills/` | None |
+| OpenCode | `AGENTS.md` | `.agents/skills/` and `.claude/skills/` | None |
+| Antigravity (IDE and CLI) | `AGENTS.md` | `.agents/skills/` | None |
+| Cursor | `AGENTS.md` | `.agents/skills/` and `.claude/skills/` | None |
+| GitHub Copilot | `AGENTS.md` | `.agents/skills/` and `.claude/skills/` | None |
+| Claude Code | `CLAUDE.md`, which imports `AGENTS.md` | `.claude/skills/` | None |
+| Gemini CLI (legacy) | `AGENTS.md`, via `.gemini/settings.json` | `.agents/skills/` | Folder trust: if you turned on Trusted Folders, trust this repo, or Gemini CLI ignores `.gemini/settings.json` and misses the rules |
+
+Gemini CLI was replaced by Antigravity CLI in June 2026. Prefer Antigravity; `.gemini/settings.json` only keeps the old CLI working.
+
+Agents that read both skill folders see each skill twice. The copies are identical, so either one works.
 
 ## Using the skills
 
-The skills live in two identical copies:
-
-- `.agents/skills/` is read by Codex, Antigravity, Gemini CLI, Cursor and Copilot.
-- `.claude/skills/` is read by Claude Code.
+The skills live in two identical copies, `.agents/skills/` and `.claude/skills/`, because Claude Code reads only the second. CI fails if the two copies differ (`.github/workflows/agent-skills.yml`).
 
 To run a skill:
 
 - **Your agent supports skills:** invoke it by name, for example `/grill-with-docs` in Claude Code, or "use the grill-with-docs skill".
 - **Your agent doesn't support skills:** open `.agents/skills/<name>/SKILL.md` and follow it as instructions. When a skill says "call the Skill tool with X", open X's `SKILL.md` the same way.
+- **Your agent can't start sub-agents:** `code-review` and `implement-spec` run sub-agents in parallel. Run each part one after another instead, each in a fresh session, and combine the reports yourself.
 - **Unsure which skill fits:** open `ask-matt`. It maps every skill to the situation it's for.
 
-The skills are pinned in `skills-lock.json`. Update them with `npx skills update -p`, and commit the changes to both folders. `docs/agents/` is already configured, so `setup-matt-pocock-skills` only needs to be re-run to switch issue trackers.
+The skills are pinned in `skills-lock.json`. Update them with `npx skills update -p`, copy the result into both folders, and commit both. `docs/agents/` is already configured, so `setup-matt-pocock-skills` only needs to be re-run to switch issue trackers.
+
+## Free tiers
+
+Most of the team uses free plans, which have smaller context windows and usage limits. The workflow is built for that:
+
+- Work one ticket per session. Start a fresh session (`/clear` or a new chat) between tickets; each ticket carries its own context.
+- Point the agent at the files it needs (the ticket, the relevant ADR) instead of asking it to explore the whole repo.
+- When you hit a usage limit mid-task, run `handoff` (or ask the agent to write a short summary to `.scratch/`) and continue in another tool. The rules and skills are the same in every supported agent.
 
 ## Step 0: Review GitHub (required, every session)
 

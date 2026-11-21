@@ -1,0 +1,29 @@
+name: Agent skills in sync
+
+# .agents/skills/ and .claude/skills/ must be identical copies.
+# Claude Code reads only .claude/skills/; every other agent reads .agents/skills/.
+on:
+  pull_request:
+    paths:
+      - ".agents/skills/**"
+      - ".claude/skills/**"
+  push:
+    branches: ["main", "dev"]
+    paths:
+      - ".agents/skills/**"
+      - ".claude/skills/**"
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare the two skill folders
+        run: |
+          if ! diff -r .agents/skills .claude/skills; then
+            echo "::error::.agents/skills and .claude/skills differ. Copy your change into both folders."
+            exit 1
+          fi

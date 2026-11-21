@@ -1,8 +1,8 @@
 # AGENTS.md
 
-Instructions for AI coding agents (Claude Code, Codex, Cursor, Copilot, Gemini, and others) and for people working on this repo.
+Instructions for AI coding agents (Claude Code, Codex, OpenCode, Antigravity, Cursor, Copilot and others) and for people working on this repo.
 
-This is the website for **Google Developer Groups on Campus – Mapúa University** (GDGoC Mapúa). The project plan and feature roadmap are in [`resource/documentation/GDGoC Website Plan.md`](resource/documentation/GDGoC%20Website%20Plan.md).
+This is the website for **Google Developer Groups on Campus – Mapúa University** (GDGoC Mapúa). **What to build:** the current Sprint 1 requirements are in [`resource/documentation/PRD/NEW/`](resource/documentation/PRD/NEW/). They take priority over the earlier [`GDGoC Website Plan.md`](resource/documentation/GDGoC%20Website%20Plan.md). **How it's built:** [`docs/proposals/0001`](docs/proposals/0001-freedom-wall-and-events.md) and the ADRs in [`docs/adr/`](docs/adr/). Domain terms are in [`GLOSSARY.md`](GLOSSARY.md).
 
 ## Repository
 
@@ -24,7 +24,7 @@ Every agent follows [`docs/agents/workflow.md`](docs/agents/workflow.md). Read i
 2. **Verify** inside `gdgoc/`: `npm run lint` and `npm run build`. Add `npm test` once Vitest is set up.
 3. **Ship:** open a PR against the canonical `dev` (the `pr` skill writes the body), then run `retro` after larger builds.
 
-The skills are committed in `.agents/skills/` (Codex, Antigravity, Gemini CLI, Cursor, Copilot) and `.claude/skills/` (Claude Code). If your agent can't run skills, open `.agents/skills/<name>/SKILL.md` and follow it.
+The skills are committed in `.agents/skills/` (Codex, OpenCode, Antigravity, Cursor, Copilot) and `.claude/skills/` (Claude Code), as two identical copies. [`docs/agents/workflow.md`](docs/agents/workflow.md) lists what each agent reads and how to work on a free tier. If your agent can't run skills, open `.agents/skills/<name>/SKILL.md` and follow it.
 
 ## Privacy and safety (required)
 
@@ -40,9 +40,11 @@ This site stores real students' data (names, emails, GDG IDs, campus and photos 
 ## Layout
 
 - `gdgoc/`: the Next.js app. **Run every npm command from here**, not from the repo root.
-- `resource/documentation/`: planning and tech-stack docs (for reading only, not code).
+- `resource/documentation/`: planning and tech-stack docs (for reading only, not code). `PRD/NEW/` holds the current requirements; `PRD/OLD/` keeps earlier versions.
+- `CODING_STANDARDS.md`: the rules `code-review` enforces.
 - `docs/agents/`: the workflow, issue tracker, labels and domain-doc rules for agents.
 - `.agents/skills/`, `.claude/skills/`: the committed workflow skills (two identical copies, pinned in `skills-lock.json`).
+- `.gemini/settings.json`: makes the legacy Gemini CLI read `AGENTS.md`.
 - `.github/workflows/docker-build.yml`: CI.
 
 ## Stack
@@ -88,6 +90,8 @@ If these are missing, `client.ts` falls back to a placeholder client. Pages stil
 - The two Supabase key variables above have different names. Set both.
 
 ## CI
+
+`agent-skills.yml` fails any PR where `.agents/skills/` and `.claude/skills/` differ.
 
 Every push to `main` or `dev` builds the Docker image from `gdgoc/Dockerfile` and pushes it to GitHub Container Registry (`ghcr.io/<owner>/<repo>`). Make sure `npm run build` passes before you push.
 
