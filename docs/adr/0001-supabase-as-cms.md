@@ -4,7 +4,7 @@ status: proposed
 
 # Supabase plus an in-site /admin is the CMS
 
-Content such as Events, and moderation of Submissions, is managed in Supabase tables through an `/admin` area inside the website, open to Moderators only. We chose this over a separate CMS (Sanity, Payload or Decap). The chapter's officers change every year, so the handoff has to be just "make the new officers Moderators", with no second system, login or bill to pass along. The site already edits Officers and Products this way, and the review queue needs an admin screen anyway.
+Content such as Events and Announcements, and moderation of Submissions, is managed in Supabase tables through an `/admin` area inside the website, open to Administrators only. We chose this over a separate CMS (Sanity, Payload or Decap). The chapter's officers change every year, so the handoff has to be just "make the new officers Administrators", with no second system, login or bill to pass along. The site already edits Officers and Products this way, and the review queue needs an admin screen anyway.
 
 ## Considered options
 
@@ -14,4 +14,4 @@ Content such as Events, and moderation of Submissions, is managed in Supabase ta
 
 ## Consequences
 
-Editing in the CMS is only as safe as the database's Row Level Security rules. Every table the CMS writes to must check `private.is_moderator()` in its policies.
+Editing in the CMS is only as safe as the database's Row Level Security rules. Every table the CMS writes to must check `private.is_admin()` in its policies.
