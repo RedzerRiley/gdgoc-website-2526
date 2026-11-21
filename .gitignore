@@ -34,3 +34,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# agent issue tracker (local mode, per contributor)
+.scratch/
+.env.*
+!.env.example
+*.pem
+*.key
+*service-account*.json
+supabase/.temp/
