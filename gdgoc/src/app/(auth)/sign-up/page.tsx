@@ -28,42 +28,27 @@ export default function SignUpPage() {
         return;
       }
 
-      const { data, error: signUpError } = await supabase.auth.signUp({
+      // A trigger on auth.users creates the Users row from this metadata, so
+      // sign-up works with email confirmation on (no session yet).
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+            gdg_id: gdgId,
+            campus: campus,
+          },
+        },
       });
-      
+
       if (signUpError) {
         setError(signUpError.message);
         setLoading(false);
         return;
       }
 
-      const user = data.user;
-      if(!user){
-        setError("User creation failed");
-        setLoading(false);
-        return;
-      }
-
-      const { error: dbError } = await supabase
-        .from("Users")
-        .insert({
-          user_id: user.id,
-          first_name: firstName,
-          last_name: lastName,
-          gdg_id: gdgId,
-          email: email,
-          campus: campus,
-          is_admin: false,
-        });
-
-        if (dbError) {
-          setError(dbError.message);
-          setLoading(false);
-          return;
-        }
-        
       router.refresh();
       router.push("/login");
 

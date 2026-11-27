@@ -1,0 +1,2 @@
+-- Local seed data. Fake placeholders only (AGENTS.md): never real Members.
+-- Each feature appends its own sample rows here.

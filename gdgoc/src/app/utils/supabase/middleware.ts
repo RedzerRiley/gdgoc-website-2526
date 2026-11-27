@@ -32,9 +32,9 @@ export async function middleware(req: NextRequest){
     }
 
     const { data: user } = await supabase
-        .from("users")
+        .from("Users")
         .select("is_admin")
-        .eq("id", session.user.id)
+        .eq("user_id", session.user.id)
         .single();
 
     if(!user?.is_admin){
