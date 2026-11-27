@@ -4,3 +4,7 @@ npm-debug.log
 *.log
 Dockerfile
 .dockerignore
+# never ship local secrets into the image
+.env*
+!.env.example
+.git
